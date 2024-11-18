@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +59,7 @@ public class ABB {
             return novo;
         }
 
-        int comparacao = palavra.texto.compareTo(atual.palavra.texto);
+        int comparacao = palavra.getTexto().compareTo(atual.palavra.getTexto());
         if (comparacao < 0) {
             atual.left = insereRecursivo(atual.left, atual, palavra);
         } else if (comparacao > 0) {
@@ -73,25 +76,43 @@ public class ABB {
     }
 
     private Node buscaRecursiva(Node atual, String texto) {
-        if (atual == null || atual.palavra.texto.equals(texto)) {
+        if (atual == null || atual.palavra.getTexto().equals(texto)) {
             return atual;
         }
 
-        if (texto.compareTo(atual.palavra.texto) < 0) {
+        if (texto.compareTo(atual.palavra.getTexto()) < 0) {
             return buscaRecursiva(atual.left, texto);
         } else {
             return buscaRecursiva(atual.right, texto);
         }
     }
+
     public void carregarTexto(String caminho) {
-        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
-            String linha;
-            while ((linha = br.readLine()) != null) {
-                String[] palavras = linha.replaceAll("[^a-zA-Zá-úÁ-Ú]", " ").toLowerCase().split("\\s+");
-                for (String palavra : palavras) {
-                    if (!palavra.isEmpty()) {
-                        this.insere(new Palavra(palavra));
+        try {
+            Path arq_produtos = Paths.get(caminho);
+            String aux[] = Files.readAllLines(arq_produtos).toArray(new String[0]);
+            for (String linhas : aux) {
+                String[] palavrasLinha = linhas.split(" ");
+                    for (String linha : palavrasLinha) {
+                    System.out.println(linha);
+
+                    String semPontuacoes = linha.replaceAll("[\\p{Punct}]", "");
+
+                    String minusculas = semPontuacoes.toLowerCase();
+
+                    String numerosPorExtenso = substituirNumeros(minusculas);
+
+                    String[] palavras = numerosPorExtenso.split(" ");
+                    StringBuilder resultadoFinal = new StringBuilder();
+                    for (String palavra : palavras) {
+                        if (palavra.contains("-")) {
+                            resultadoFinal.append(palavra.replace("-", " "));
+                        } else {
+                            resultadoFinal.append(palavra);
+                        }
+                        resultadoFinal.append(" ");
                     }
+                    this.insere(new Palavra(resultadoFinal.toString().trim()));
                 }
             }
         System.out.println("TEXTO CARREGADO!");
@@ -113,9 +134,9 @@ public class ABB {
         int[] esquerda = calcularEstatisticas(atual.left);
         int[] direita = calcularEstatisticas(atual.right);
 
-        int totalPalavras = esquerda[0] + direita[0] + atual.palavra.ocorrencias;
+        int totalPalavras = esquerda[0] + direita[0] + atual.palavra.getOcorrencias();
         int palavrasDistintas = esquerda[1] + direita[1] + 1;
-        int palavraMaisLonga = Math.max(Math.max(esquerda[2], direita[2]), atual.palavra.texto.length());
+        int palavraMaisLonga = Math.max(Math.max(esquerda[2], direita[2]), atual.palavra.getTexto().length());
 
         return new int[]{totalPalavras, palavrasDistintas, palavraMaisLonga};
     }
@@ -136,7 +157,7 @@ public class ABB {
 
     private void calcularContagemLetras(Node no, Map<Integer, Integer> contagemLetras) {
         if (no != null) {
-            int numeroDeLetras = no.getPalavra().getPalavra().length();
+            int numeroDeLetras = no.getPalavra().getTexto().length();
             contagemLetras.put(numeroDeLetras, contagemLetras.getOrDefault(numeroDeLetras, 0) + 1);
 
             calcularContagemLetras(no.left, contagemLetras);
@@ -157,7 +178,7 @@ public class ABB {
     
     private void contarFrequencia(Node no, Map<String, Integer> frequenciaPalavras) {
         if (no != null) {
-            String palavra = no.getPalavra().getPalavra(); // Obtém a palavra do nó
+            String palavra = no.getPalavra().getTexto(); // Obtém a palavra do nó
             frequenciaPalavras.put(palavra, frequenciaPalavras.getOrDefault(palavra, 0) + 1);
 
             contarFrequencia(no.left, frequenciaPalavras);
@@ -172,5 +193,17 @@ public class ABB {
         for (Map.Entry<String, Integer> entrada : maisFrequentes) {
             System.out.println(entrada.getKey() + " - " + entrada.getValue() + " ocorrência(s)");
         }
+    }
+
+    private String substituirNumeros(String texto) {
+        String[][] numeros = {
+                {"0", "zero"}, {"1", "um"}, {"2", "dois"}, {"3", "três"},
+                {"4", "quatro"}, {"5", "cinco"}, {"6", "seis"}, {"7", "sete"},
+                {"8", "oito"}, {"9", "nove"}, {"10", "dez"}
+        };
+        for (String[] numero : numeros) {
+            texto = texto.replaceAll("\\b" + numero[0] + "\\b", numero[1]);
+        }
+        return texto;
     }
 }

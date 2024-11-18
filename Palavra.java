@@ -1,6 +1,6 @@
 public class Palavra {
-    String texto;
-    int ocorrencias;
+    private String texto;
+    private int ocorrencias;
 
     public Palavra(String texto) {
         this.texto = texto;
@@ -14,8 +14,12 @@ public class Palavra {
     public String toString() {
         return texto + " (" + ocorrencias + ")";
     }
-    public String getPalavra() {
+    public String getTexto() {
         return this.texto;
+    }
+
+    public int getOcorrencias(){
+        return this.ocorrencias;
     }
 
 }
