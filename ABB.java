@@ -1,3 +1,11 @@
+/**
+ * Estrutura-de-Dados
+ * 
+ * 10420439 Matheus fernandes dos Santos
+ * 10428577 Marcos Minhano
+ * 10420572 Luis Felipe Santos do Nascimento
+ */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -90,29 +98,21 @@ public class ABB {
     public void carregarTexto(String caminho) {
         try {
             Path arq_produtos = Paths.get(caminho);
-            String aux[] = Files.readAllLines(arq_produtos).toArray(new String[0]);
-            for (String linhas : aux) {
+            String arquivo[] = Files.readAllLines(arq_produtos).toArray(new String[0]);
+
+            // Para cada linha dentro do arquivo
+            for (String linhas : arquivo) {
+                // Pega as palavras da linha separando por espaco
                 String[] palavrasLinha = linhas.split(" ");
-                for (String linha : palavrasLinha) {
-                    System.out.println(linha);
 
-                    String semPontuacoes = linha.replaceAll("[\\p{Punct}]", "");
+                // Para cada palavra
+                for (String palavra : palavrasLinha) {
+                    System.out.println(palavra);
 
-                    String minusculas = semPontuacoes.toLowerCase();
+                    // Deixar tudo em minuscula
+                    String minusculas = palavra.toLowerCase();
 
-                    String numerosPorExtenso = substituirNumeros(minusculas);
-
-                    String[] palavras = numerosPorExtenso.split(" ");
-                    StringBuilder resultadoFinal = new StringBuilder();
-                    for (String palavra : palavras) {
-                        if (palavra.contains("-")) {
-                            resultadoFinal.append(palavra.replace("-", " "));
-                        } else {
-                            resultadoFinal.append(palavra);
-                        }
-                        resultadoFinal.append(" ");
-                    }
-                    this.insere(new Palavra(resultadoFinal.toString().trim()));
+                    this.insere(new Palavra(minusculas.trim()));
                 }
             }
             System.out.println("TEXTO CARREGADO!");
