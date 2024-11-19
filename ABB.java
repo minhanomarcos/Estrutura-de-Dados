@@ -93,7 +93,7 @@ public class ABB {
             String aux[] = Files.readAllLines(arq_produtos).toArray(new String[0]);
             for (String linhas : aux) {
                 String[] palavrasLinha = linhas.split(" ");
-                    for (String linha : palavrasLinha) {
+                for (String linha : palavrasLinha) {
                     System.out.println(linha);
 
                     String semPontuacoes = linha.replaceAll("[\\p{Punct}]", "");
@@ -115,7 +115,7 @@ public class ABB {
                     this.insere(new Palavra(resultadoFinal.toString().trim()));
                 }
             }
-        System.out.println("TEXTO CARREGADO!");
+            System.out.println("TEXTO CARREGADO!");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,7 +129,8 @@ public class ABB {
     }
 
     private int[] calcularEstatisticas(Node atual) {
-        if (atual == null) return new int[]{0, 0, 0};
+        if (atual == null)
+            return new int[] { 0, 0, 0 };
 
         int[] esquerda = calcularEstatisticas(atual.getLeft());
         int[] direita = calcularEstatisticas(atual.getRight());
@@ -138,9 +139,10 @@ public class ABB {
         int palavrasDistintas = esquerda[1] + direita[1] + 1;
         int palavraMaisLonga = Math.max(Math.max(esquerda[2], direita[2]), atual.getPalavra().getTexto().length());
 
-        return new int[]{totalPalavras, palavrasDistintas, palavraMaisLonga};
+        return new int[] { totalPalavras, palavrasDistintas, palavraMaisLonga };
     }
-   public void contarLetras() {
+
+    public void contarLetras() {
         if (isEmpty()) {
             System.out.println("A árvore está vazia. Carregue um texto primeiro.");
             return;
@@ -164,6 +166,7 @@ public class ABB {
             calcularContagemLetras(no.getRight(), contagemLetras);
         }
     }
+
     public List<Map.Entry<String, Integer>> obterMaisFrequentes() {
         Map<String, Integer> frequenciaPalavras = new HashMap<>();
         contarFrequencia(root, frequenciaPalavras);
@@ -175,7 +178,6 @@ public class ABB {
         return listaOrdenada;
     }
 
-    
     private void contarFrequencia(Node no, Map<String, Integer> frequenciaPalavras) {
         if (no != null) {
             String palavra = no.getPalavra().getTexto(); // Obtém a palavra do nó
@@ -186,7 +188,6 @@ public class ABB {
         }
     }
 
-    
     public void exibirMaisFrequentes() {
         List<Map.Entry<String, Integer>> maisFrequentes = obterMaisFrequentes();
         System.out.println("Palavras mais frequentes (ordenadas por frequência):");
@@ -197,9 +198,9 @@ public class ABB {
 
     private String substituirNumeros(String texto) {
         String[][] numeros = {
-                {"0", "zero"}, {"1", "um"}, {"2", "dois"}, {"3", "três"},
-                {"4", "quatro"}, {"5", "cinco"}, {"6", "seis"}, {"7", "sete"},
-                {"8", "oito"}, {"9", "nove"}, {"10", "dez"}
+                { "0", "zero" }, { "1", "um" }, { "2", "dois" }, { "3", "três" },
+                { "4", "quatro" }, { "5", "cinco" }, { "6", "seis" }, { "7", "sete" },
+                { "8", "oito" }, { "9", "nove" }, { "10", "dez" }
         };
         for (String[] numero : numeros) {
             texto = texto.replaceAll("\\b" + numero[0] + "\\b", numero[1]);
