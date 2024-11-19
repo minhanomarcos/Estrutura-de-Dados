@@ -31,7 +31,7 @@ public class ProjABB {
                     String busca = scanner.nextLine().toLowerCase();
                     Node resultado = arvore.busca(busca);
                     if (resultado != null) {
-                        System.out.println("A palavra '" + busca + "' aparece " + resultado.palavra.getOcorrencias() + " vezes.");
+                        System.out.println("A palavra '" + busca + "' aparece " + resultado.getPalavra().getOcorrencias() + " vezes.");
                     } else {
                         System.out.println("A palavra '" + busca + "' não foi encontrada.");
                     }

@@ -21,29 +21,29 @@ public class ABB {
     }
 
     public boolean isLeaf(Node n) {
-        return n.left == null && n.right == null;
+        return n.getLeft() == null && n.getRight() == null;
     }
 
     public void executaPreOrdem(Node no) {
         if (no != null) {
             no.mostraNo();
-            this.executaPreOrdem(no.left);
-            this.executaPreOrdem(no.right);
+            this.executaPreOrdem(no.getLeft());
+            this.executaPreOrdem(no.getRight());
         }
     }
 
     public void executaInOrdem(Node no) {
         if (no != null) {
-            this.executaInOrdem(no.left);
+            this.executaInOrdem(no.getLeft());
             no.mostraNo();
-            this.executaInOrdem(no.right);
+            this.executaInOrdem(no.getRight());
         }
     }
 
     public void executaPosOrdem(Node no) {
         if (no != null) {
-            this.executaPosOrdem(no.left);
-            this.executaPosOrdem(no.right);
+            this.executaPosOrdem(no.getLeft());
+            this.executaPosOrdem(no.getRight());
             no.mostraNo();
         }
     }
@@ -55,17 +55,17 @@ public class ABB {
     private Node insereRecursivo(Node atual, Node parent, Palavra palavra) {
         if (atual == null) {
             Node novo = new Node(palavra);
-            novo.parent = parent;
+            novo.setParent(parent);
             return novo;
         }
 
-        int comparacao = palavra.getTexto().compareTo(atual.palavra.getTexto());
+        int comparacao = palavra.getTexto().compareTo(atual.getPalavra().getTexto());
         if (comparacao < 0) {
-            atual.left = insereRecursivo(atual.left, atual, palavra);
+            atual.setLeft(insereRecursivo(atual.getLeft(), atual, palavra));
         } else if (comparacao > 0) {
-            atual.right = insereRecursivo(atual.right, atual, palavra);
+            atual.setRight(insereRecursivo(atual.getRight(), atual, palavra));
         } else {
-            atual.palavra.incrementarOcorrencias();
+            atual.getPalavra().incrementarOcorrencias();
         }
 
         return atual;
@@ -76,14 +76,14 @@ public class ABB {
     }
 
     private Node buscaRecursiva(Node atual, String texto) {
-        if (atual == null || atual.palavra.getTexto().equals(texto)) {
+        if (atual == null || atual.getPalavra().getTexto().equals(texto)) {
             return atual;
         }
 
-        if (texto.compareTo(atual.palavra.getTexto()) < 0) {
-            return buscaRecursiva(atual.left, texto);
+        if (texto.compareTo(atual.getPalavra().getTexto()) < 0) {
+            return buscaRecursiva(atual.getLeft(), texto);
         } else {
-            return buscaRecursiva(atual.right, texto);
+            return buscaRecursiva(atual.getRight(), texto);
         }
     }
 
@@ -131,12 +131,12 @@ public class ABB {
     private int[] calcularEstatisticas(Node atual) {
         if (atual == null) return new int[]{0, 0, 0};
 
-        int[] esquerda = calcularEstatisticas(atual.left);
-        int[] direita = calcularEstatisticas(atual.right);
+        int[] esquerda = calcularEstatisticas(atual.getLeft());
+        int[] direita = calcularEstatisticas(atual.getRight());
 
-        int totalPalavras = esquerda[0] + direita[0] + atual.palavra.getOcorrencias();
+        int totalPalavras = esquerda[0] + direita[0] + atual.getPalavra().getOcorrencias();
         int palavrasDistintas = esquerda[1] + direita[1] + 1;
-        int palavraMaisLonga = Math.max(Math.max(esquerda[2], direita[2]), atual.palavra.getTexto().length());
+        int palavraMaisLonga = Math.max(Math.max(esquerda[2], direita[2]), atual.getPalavra().getTexto().length());
 
         return new int[]{totalPalavras, palavrasDistintas, palavraMaisLonga};
     }
@@ -160,8 +160,8 @@ public class ABB {
             int numeroDeLetras = no.getPalavra().getTexto().length();
             contagemLetras.put(numeroDeLetras, contagemLetras.getOrDefault(numeroDeLetras, 0) + 1);
 
-            calcularContagemLetras(no.left, contagemLetras);
-            calcularContagemLetras(no.right, contagemLetras);
+            calcularContagemLetras(no.getLeft(), contagemLetras);
+            calcularContagemLetras(no.getRight(), contagemLetras);
         }
     }
     public List<Map.Entry<String, Integer>> obterMaisFrequentes() {
@@ -181,8 +181,8 @@ public class ABB {
             String palavra = no.getPalavra().getTexto(); // Obtém a palavra do nó
             frequenciaPalavras.put(palavra, frequenciaPalavras.getOrDefault(palavra, 0) + 1);
 
-            contarFrequencia(no.left, frequenciaPalavras);
-            contarFrequencia(no.right, frequenciaPalavras);
+            contarFrequencia(no.getLeft(), frequenciaPalavras);
+            contarFrequencia(no.getRight(), frequenciaPalavras);
         }
     }
 
